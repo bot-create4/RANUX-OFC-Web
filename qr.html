@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KING RANUX | QR SCANNER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #1a1a1a; --card-bg: #2a2a2a; --text-color: #e0e0e0; --accent-color: #8a2be2; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
+        #content { display: flex; flex-direction: column; width: 100%; max-width: 350px; text-align: center; background-color: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        #QR-content img { border-radius: 10px; width: 100%; height: auto; border: 4px solid var(--accent-color); }
+        #title-container { margin-top: 20px; }
+        h2 { font-size: 1.5em; margin-bottom: 10px; }
+        p.legend { color: #b0b0b0; }
+        progress { width: 100%; margin-top: 15px; }
+        .reload-button { display: inline-block; padding: 12px 25px; font-size: 1em; background-color: var(--accent-color); color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px; transition: background-color 0.3s ease; }
+        .reload-button:hover { background-color: #6a1eae; }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div id="QR-content">
+            <img id="qr-image" src="/qr_code_handler" alt="Loading QR Code...">
+        </div>
+        <div id="title-container">
+            <h2 id="main">Scan This QR Code</h2>
+            <p class="legend" id="legend">Please scan with your WhatsApp Web scanner.</p>
+        </div>
+        <progress value="0" max="45" id="progressBar"></progress>
+    </div>
+    <script>
+        let timeLeft = 45;
+        const mainText = document.getElementById("main");
+        const progressBar = document.getElementById("progressBar");
+        const qrImage = document.getElementById("qr-image");
+
+        const timer = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                mainText.innerHTML = "QR Expired!";
+                qrImage.style.display = 'none'; // Hide expired QR
+                // Add a reload button
+                const reloadBtn = document.createElement('a');
+                reloadBtn.href = 'javascript:location.reload()';
+                reloadBtn.className = 'reload-button';
+                reloadBtn.innerText = 'Reload Page';
+                mainText.parentNode.appendChild(reloadBtn);
+            } else {
+                progressBar.value = 45 - timeLeft;
+            }
+            timeLeft -= 1;
+        }, 1000);
+    </script>
+</body>
+</html>

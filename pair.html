@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KING RANUX | PAIR CODE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      background: rgba(30, 30, 30, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    h3 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #8a2be2;
+    }
+    h6 {
+      margin-bottom: 25px;
+      font-weight: 400;
+      color: #aaa;
+    }
+    .input-container {
+      display: flex;
+      border-radius: 12px;
+      padding: 5px;
+      background: #1e1e1e;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .input-container input {
+      border-radius: 8px;
+      background: #2a2a2a;
+      flex-grow: 1;
+      padding: 14px;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .input-container input:focus {
+      border-color: #8a2be2;
+    }
+    .input-container button {
+      padding: 0 25px;
+      background: #8a2be2;
+      font-weight: bold;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+    .input-container button:hover {
+        background-color: #6a1eae;
+    }
+    #pair {
+      margin-top: 25px;
+      font-size: 1.2em;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    #copy {
+      cursor: pointer;
+      color: #00bfff;
+      transition: color 0.3s;
+    }
+    #copy:hover {
+        color: #fff;
+    }
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 100%;
+      background: #8a2be2;
+      border-radius: 5px;
+      animation: pulse-bg 2s infinite;
+    }
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: scanner 2s infinite linear;
+    }
+    @keyframes pulse-bg {
+      0% { background-color: #6a1eae; }
+      50% { background-color: #8a2be2; }
+      100% { background-color: #6a1eae; }
+    }
+    @keyframes scanner {
+      0% { left: -50%; }
+      100% { left: 100%; }
+    }
+    .processing-text {
+        margin-top: 10px;
+        color: #aaa;
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #fff;
+      color: #333;
+      text-align: center;
+      border-radius: 8px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 30px;
+      font-size: 17px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class="fas fa-mobile-alt fa-2x" style="color:#8a2be2; margin-bottom:15px;"></i>
+    <h3>KING RANUX PAIRING</h3>
+    <h6>Enter your number to get the pairing code</h6>
+    <div class="input-container">
+      <input type="number" id="number" placeholder="+94XXXXXXXXX" />
+      <button id="submit">Get Code</button>
+    </div>
+    <div id="pair"></div>
+  </div>
+  
+  <div id="toast">Copied to clipboard! ✅</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    const pairDiv = document.getElementById("pair");
+    const submitBtn = document.getElementById("submit");
+    const numberInput = document.getElementById("number");
+
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.className = "show";
+      setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    async function copyCode() {
+      const codeElement = document.getElementById("copy");
+      if (!codeElement) return;
+      const codeToCopy = codeElement.innerText;
+      await navigator.clipboard.writeText(codeToCopy);
+      showToast();
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      const number = numberInput.value.replace(/[^0-9]/g, "");
+      if (!number || number.length < 10) {
+        pairDiv.innerHTML = `<p style="color:#ff6b6b;">Please enter a valid number.</p>`;
+        return;
+      }
+      
+      pairDiv.innerHTML = `
+        <p class="processing-text">Fetching your code...</p>
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+        </div>
+      `;
+      submitBtn.disabled = true;
+
+      try {
+        const { data } = await axios(`/pair_code_handler?number=${number}`);
+        const code = data.code || "Service Unavailable";
+        pairDiv.innerHTML = `
+            <p>Your Pairing Code:</p>
+            <h2 id="copy" onclick="copyCode()">${code}</h2>
+            <small style="color:#aaa;">Click on the code to copy it.</small>
+        `;
+      } catch (error) {
+        pairDiv.innerHTML = `<p style="color:#ff6b6b;">Error getting code. Please try again.</p>`;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
